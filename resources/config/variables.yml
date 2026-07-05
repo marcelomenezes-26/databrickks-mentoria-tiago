@@ -5,6 +5,14 @@ variables:
   git_branch:
     description: Nome da git branch usada nos jobs
 
+  service_principal_name:
+    description: Nome do service principal
+
+  service_principal_id:
+    description: ID do service principal
+    lookup:
+      service_principal: ${var.service_principal_name}
+
   job_cluster_leve:
     description: 'Job for light processing'
     type: complex
