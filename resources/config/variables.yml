@@ -1,0 +1,27 @@
+variables:
+  storage_account:
+    description: Nome da storage account
+  
+  git_branch:
+    description: Nome da git branch usada nos jobs
+
+  job_cluster_leve:
+    description: 'Job for light processing'
+    type: complex
+    default:
+      kind: CLASSIC_PREVIEW
+      spark_version: '15.4.x-scala2.12'
+      node_type_id: 'Standard_F4'
+      is_single_node: true
+      azure_attributes:
+        first_on_demand: 1
+        spot_bid_max_price: -1
+      spark_env_vars:
+        STORAGE_ACCOUNT: ${var.storage_account}
+        ENV: ${bundle.target}
+      spark_conf:
+        spark.speculation: true
+        spark.databricks.delta.retentionDurationCheck.enabled: false
+        spark.databricks.io.delta.features.deletionVectors.enabled: false
+        spark.databricks.delta.properties.defaults.enableDeletionVectors: false
+

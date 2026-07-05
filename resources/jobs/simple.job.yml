@@ -1,0 +1,21 @@
+resources:
+  jobs:
+    demo_job:
+      name: demo_job
+      tasks:
+        - task_key: demo_task
+          notebook_task:
+            notebook_path: src/hello
+            source: GIT
+          environment_key: Default
+      git_source:
+        git_url: https://github.com/marcelomenezes-26/databrickks-mentoria-tiago
+        git_provider: gitHub
+        git_branch: ${var.git_branch}
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED

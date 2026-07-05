@@ -1,0 +1,26 @@
+bundle:
+  name: data_platform
+
+include:
+  - resources/config/*.yml
+  - resources/jobs/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405608198998946.6.azuredatabricks.net
+      root_path: ~/data_platform  
+  
+  qa:
+    mode: production
+    workspace:
+      host: https://adb-7405608198998946.6.azuredatabricks.net
+      root_path: /Shared/data_platform
+  
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405608198998946.6.azuredatabricks.net
+      root_path: /Shared/data_platform
