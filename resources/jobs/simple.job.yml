@@ -7,6 +7,8 @@ resources:
           notebook_task:
             notebook_path: src/hello
             source: GIT
+            base_parameters:
+              date_ingestion: 2026-01-01
           environment_key: Default
       git_source:
         git_url: https://github.com/marcelomenezes-26/databrickks-mentoria-tiago
@@ -18,4 +20,4 @@ resources:
         - environment_key: Default
           spec:
             environment_version: "5"
-      performance_target: PERFORMANCE_OPTIMIZED
+      performance_target: STANDARD
