@@ -15,11 +15,11 @@ targets:
   qa:
     mode: production
     workspace:
-      host: https://adb-7405608198998946.6.azuredatabricks.net
+      host: https://adb-7405614119780645.5.azuredatabricks.net
       root_path: /Shared/data_platform
   
   prod:
     mode: production
     workspace:
-      host: https://adb-7405608198998946.6.azuredatabricks.net
+      host: https://adb-7405609419367825.5.azuredatabricks.net
       root_path: /Shared/data_platform
