@@ -12,37 +12,49 @@ on:
       - "**/*.sql"
       - ".github/workflows/databricks-deploy.yml"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: databricks-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/qa' || github.ref == 'refs/heads/main'
-
+    timeout-minutes: 15
     env:
       DATABRICKS_CFG_QA: ${{ secrets.DATABRICKS_CFG_QA }}
       DATABRICKS_CFG_PRD: ${{ secrets.DATABRICKS_CFG_PRD }}
       DATABRICKS_CONFIG_FILE: .databrickscfg
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Databricks CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+        uses: databricks/setup-cli@v1.5.0
 
       - name: Configure Databricks Profile
         run: |
           BRANCH="${GITHUB_REF##*/}"
-          if [ "$BRANCH" = "qa" ]; then
-            echo "${DATABRICKS_CFG_QA}" > .databrickscfg
-            echo "TARGET=qa" >> $GITHUB_ENV
-          else
-            echo "${DATABRICKS_CFG_PRD}" > .databrickscfg
-            echo "TARGET=prod" >> $GITHUB_ENV
-          fi
+          case "$BRANCH" in
+            qa)
+              echo "${DATABRICKS_CFG_QA}" > .databrickscfg
+              echo "TARGET=qa" >> "$GITHUB_ENV"
+              ;;
+            main)
+              echo "${DATABRICKS_CFG_PRD}" > .databrickscfg
+              echo "TARGET=prod" >> "$GITHUB_ENV"
+              ;;
+            *)
+              echo "Branch $BRANCH não mapeada para nenhum target. Abortando." >&2
+              exit 1
+              ;;
+          esac
+          chmod 600 .databrickscfg
 
       - name: Validate Bundle
-        run: databricks bundle validate -t $TARGET -p $TARGET
+        run: databricks bundle validate -t "$TARGET" -p "$TARGET"
 
       - name: Deploy Bundle
-        run: databricks bundle deploy -t $TARGET -p $TARGET
+        run: databricks bundle deploy -t "$TARGET" -p "$TARGET"
